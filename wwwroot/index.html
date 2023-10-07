@@ -1,0 +1,171 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <script src = "https://cdnjs.cloudflare.com/ajax/libs/jquery/3.7.0/jquery.min.js"></script> <!-- jquery外部库 -->
+    <title>Boost 搜索引擎</title>
+    <style>
+        *{
+            /*去掉网页默认的 内外边距*/
+            margin: 0;
+            padding: 0;
+        }
+
+        html,body{height: 100%;}
+
+        .container{
+            width: 800px;
+            margin: 0px 100px;
+            margin-top: 50px;
+        }
+
+        .container .search{
+            width: 100%;
+            height: 54px;
+        }
+
+        .container .search input{
+            width: 600px;   /*设置宽度*/
+            height: 50px;   /*设置内边框高度*/
+            border: 2px solid rgb(90, 138, 226);    /*设置外边框 宽 实线 颜色*/
+            border-top-right-radius:  30px;           /*设置边框弧度*/
+            border-bottom-right-radius:  30px;
+            border-top-left-radius: 30px;
+            border-bottom-left-radius: 30px;
+            text-align: center;                       /*设置字体居中*/
+            color: 	#A9A9A9;                        /*设置字体颜色*/
+            font-family:Georgia, 'Times New Roman', Times, serif;   /*设置字体*/
+            font-size: medium;                        /*设置字体中等*/
+            font-weight: bold;                        /*设置字体加粗*/
+        }
+
+        .container .search button{
+            width: 100px;
+            height: 54px;
+            border: 3px solid rgb(90, 138, 226);
+            border-top-right-radius:  30px;
+            border-bottom-right-radius:  30px;
+            border-top-left-radius: 30px;
+            border-bottom-left-radius: 30px;
+            background-color: cornflowerblue;
+            color: aliceblue;
+            font-family:Georgia, 'Times New Roman', Times, serif;
+            font-size: medium;
+            font-weight: bold;
+        }
+
+        .container .result{
+            width: 100%;
+        }
+
+        .container .result .item{
+            margin-top: 15px;
+        }
+
+        .container .result .item a{
+            text-decoration-line: none;
+            font-size:20px;
+            color: #4007A2;
+        }
+
+        /*设置鼠标放在标题上的下划线*/
+        .container .result .item a:hover{
+            text-decoration: underline;
+        }
+
+        .container .result .item p{
+            margin-top: 3px;
+            font-size: 16px;
+            font-family: Arial, Helvetica, sans-serif;
+            color: #C3CDB6;
+        }
+
+        .container .result .item i{
+            display: block;
+            font-style: normal;
+            color: green;
+            font-size:x-small;
+        }
+
+
+    </style>
+    
+</head>
+<body>
+    <div class="container">
+        <div class="search">
+            <input type="text" value="请输入要搜索的内容">
+            <button onclick="Search()">搜索一下</button>
+        </div>
+        <div class="result">
+            <!-- 动态生成html网页 -->
+            <!-- 调试html内容
+                <div class="item">
+                <a href="#">这是标题</a>
+                <p>这是摘要这是摘要这是摘要这是摘要这是摘要这是摘要这是摘要这是摘要这是摘要这是摘要这是摘要这是摘要这是摘要</p>
+                <i>https://dl.ccf.org.cn/V2/toSearchList.html?classen=-1&searchText=%25E7%25B4%25A2%25E5%25BC%2595&searchTextFaceted=&searchTextFacetedVal=</i>
+            </div>
+
+            <div class="item">
+                <a href="#">这是标题</a>
+                <p>这是摘要这是摘要这是摘要这是摘要这是摘要这是摘要这是摘要这是摘要这是摘要这是摘要这是摘要这是摘要这是摘要</p>
+                <i>https://dl.ccf.org.cn/V2/toSearchList.html?classen=-1&searchText=%25E7%25B4%25A2%25E5%25BC%2595&searchTextFaceted=&searchTextFacetedVal=</i>
+            </div>
+
+            <div class="item">
+                <a href="#">这是标题</a>
+                <p>这是摘要这是摘要这是摘要这是摘要这是摘要这是摘要这是摘要这是摘要这是摘要这是摘要这是摘要这是摘要这是摘要</p>
+                <i>https://dl.ccf.org.cn/V2/toSearchList.html?classen=-1&searchText=%25E7%25B4%25A2%25E5%25BC%2595&searchTextFaceted=&searchTextFacetedVal=</i>
+            </div> -->
+        </div>
+    </div>
+
+    <script>
+        function Search(){
+            let query = $(".container .search input").val();
+            console.log("query = "+ query);
+
+            $.ajax({
+                type:"Post",
+                data:{"word":query},
+                success:function(data){
+                    console.log(data);
+                    BuildHtml(data);
+                }
+            });
+        }
+    
+
+        function BuildHtml(data){
+            let result_lable = $(" .container .result");
+
+            result_lable.empty();
+
+            for(let elem of data){
+               let a_lable = $("<a>",{
+                    text: elem.title,
+                    href: elem.url,
+                    target: "_blank" 
+               });
+               let p_lable = $("<p>",{
+                    text:elem.abstract
+               });
+               let i_lable = $("<i>",{
+                    text:elem.url
+               });
+               let div_lable = $("<div>",{
+                    class : "item"
+               });
+
+               a_lable.appendTo(div_lable);
+               p_lable.appendTo(div_lable);
+               i_lable.appendTo(div_lable);
+               div_lable.appendTo(result_lable);
+            }
+        }
+    </script>
+</body>
+</html>
